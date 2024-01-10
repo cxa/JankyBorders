@@ -65,9 +65,19 @@ static inline void drawing_add_rounded_rect(CGContextRef context, CGRect rect, f
   CFRelease(stroke_path);
 }
 
+static inline void drawing_draw_inner(CGContextRef context, CGRect frame) {
+   CGContextSaveGState(context);
+   CGContextSetRGBFillColor(context, 1.f, 1.f, 1.f, 1.f);
+   CGContextFillPath(context);
+   CGContextRestoreGState(context);
+   CGContextSetLineWidth(context, 2.f);
+   CGContextStrokeRect(context, CGRectInset(frame, -6, -6));
+}
+
 static inline void drawing_draw_square_with_inset(CGContextRef context, CGRect rect, float inset) {
   drawing_add_rect_with_inset(context, rect, inset);
-  CGContextFillPath(context);
+  //CGContextFillPath(context);
+  drawing_draw_inner(context, rect);
 }
 
 static inline void drawing_draw_square_gradient_with_inset(CGContextRef context,CGGradientRef gradient, CGPoint dir[2], CGRect rect, float inset) {
