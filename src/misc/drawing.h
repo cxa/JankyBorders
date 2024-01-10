@@ -65,9 +65,22 @@ static inline void drawing_add_rounded_rect(CGContextRef context, CGRect rect, f
   CFRelease(stroke_path);
 }
 
-static inline void drawing_draw_square_with_inset(CGContextRef context, CGRect rect, float inset) {
-  drawing_add_rect_with_inset(context, rect, inset);
+static inline void drawing_draw_border_box(CGContextRef context, CGRect frame,
+                                           float inset, uint32_t fill_color) {
+  float a,r,g,b;
+  colors_from_hex(fill_color, &a, &r, &g, &b);
+  CGContextSaveGState(context);
+  CGContextSetRGBFillColor(context, r, g, b, a);
   CGContextFillPath(context);
+  CGContextRestoreGState(context);
+  CGContextSetLineWidth(context, 2.f);
+  CGContextStrokeRect(context, CGRectInset(frame, inset, inset));
+}
+
+static inline void drawing_draw_square_with_inset(CGContextRef context, CGRect rect, float inset, uint32_t box_background_color) {
+  drawing_add_rect_with_inset(context, rect, inset);
+  //CGContextFillPath(context);
+  drawing_draw_border_box(context, rect, inset / 3.f, box_background_color);
 }
 
 static inline void drawing_draw_square_gradient_with_inset(CGContextRef context,CGGradientRef gradient, CGPoint dir[2], CGRect rect, float inset) {
