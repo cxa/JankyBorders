@@ -1,4 +1,20 @@
-# JankyBorders
+# JankyBorders (inner border fork)
+
+Inner border style for self usage:
+
+<img src="images/screenshot_i.png" alt="Inner border screenshot" />
+
+Install: clone and run `make`, copy `bin/borders` to `$PATH`.
+
+Screenshot above running with:
+
+``` bash
+borders background_color=0xffffffff active_color=0xffff0000 inactive_color=0xff000000 hidpi=on style=square order=a width=24 &
+```
+
+---
+
+Below is original REDAME:
 
 <img align="right" width="50%" src="images/screenshot.png" alt="Screenshot">
 
