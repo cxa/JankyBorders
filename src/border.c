@@ -141,9 +141,9 @@ static void border_draw(struct border* border, CGRect frame, struct settings* se
   if (settings->border_style == BORDER_STYLE_SQUARE) {
     if (color_style.stype == COLOR_STYLE_SOLID
        || color_style.stype == COLOR_STYLE_GLOW) {
-      drawing_draw_square_with_inset(border->context,
-                                     path_rect,
-                                     -settings->border_width / 2.f);
+      drawing_draw_square_with_inset(border->context, path_rect,
+                                     -settings->border_width / 2.f,
+                                     settings->background.color);
     }
     else if (color_style.stype == COLOR_STYLE_GRADIENT) {
       drawing_draw_square_gradient_with_inset(border->context,
