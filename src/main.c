@@ -45,6 +45,8 @@ struct settings g_settings = { .enabled = true,
                                .blacklist_enabled = false,
                                .whitelist_enabled = false                    };
 
+char g_offrule[1024] = "";
+
 static TABLE_HASH_FUNC(hash_windows) {
   return *(uint32_t *) key;
 }

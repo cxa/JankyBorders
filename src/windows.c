@@ -7,6 +7,7 @@
 
 extern pid_t g_pid;
 extern struct settings g_settings;
+extern char g_offrule[1024];
 
 // Loaded via dlsym in main.c
 extern CFArrayRef (*JBSLSWindowIteratorGetCornerRadii)(CFTypeRef);
@@ -28,6 +29,18 @@ static bool app_allowed(struct settings* settings, char* app_name) {
   return true;
 }
 
+static bool window_allowed(uint32_t wid) {
+  if (strlen(g_offrule) == 0)
+    return true;
+
+  char cmd[256];
+  if (sprintf(cmd, g_offrule, wid) == -1)
+    return true;
+
+  int rc = system(cmd);
+  return rc != 0;
+}
+
 bool windows_window_create(struct table* windows, uint32_t wid, uint64_t sid) {
   bool window_created = false;
   int cid = SLSMainConnectionID();
@@ -39,7 +52,7 @@ bool windows_window_create(struct table* windows, uint32_t wid, uint64_t sid) {
   static char pid_name_buffer[PROC_PIDPATHINFO_MAXSIZE];
   proc_name(pid, pid_name_buffer, sizeof(pid_name_buffer));
 
-  if (pid == g_pid || !app_allowed(&g_settings, pid_name_buffer)) return false;
+  if (pid == g_pid || !app_allowed(&g_settings, pid_name_buffer) || !window_allowed(wid)) return false;
 
   CFArrayRef target_ref = cfarray_of_cfnumbers(&wid,
                                                sizeof(uint32_t),

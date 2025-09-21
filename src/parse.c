@@ -2,6 +2,8 @@
 #include "border.h"
 #include "hashtable.h"
 
+extern char g_offrule[1024];
+
 static bool str_starts_with(char* string, char* prefix) {
   if (!string || !prefix) return false;
   if (strlen(string) < strlen(prefix)) return false;
@@ -65,6 +67,7 @@ uint32_t parse_settings(struct settings* settings, int count, char** arguments) 
   static char blacklist[] = "blacklist=";
   static char whitelist[] = "whitelist=";
 
+  char rule[1024];
   char order = 'a';
   uint32_t update_mask = 0;
   for (int i = 0; i < count; i++) {
@@ -128,6 +131,13 @@ uint32_t parse_settings(struct settings* settings, int count, char** arguments) 
     }
     else if (sscanf(arguments[i], "apply-to=%d", &settings->apply_to) == 1) {
       update_mask |= BORDER_UPDATE_MASK_SETTING;
+    }
+    else if (str_starts_with(arguments[i], "offrule=")) {
+      char *p = strchr(arguments[i], '=');
+      if (p) {
+        size_t n = strlen(p + 1) + 1;
+        memmove(g_offrule, p + 1, n);
+      }
     }
     else {
       printf("[?] Borders: Invalid argument '%s'\n", arguments[i]);
