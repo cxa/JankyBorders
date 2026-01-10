@@ -3,11 +3,12 @@
 #include "helpers.h"
 #include "space.h"
 
-#define WINDOW_TAG_DOCUMENT (1ULL << 0)
-#define WINDOW_TAG_FLOATING (1ULL << 1)
-#define WINDOW_TAG_ATTACHED (1ULL << 7)
-#define WINDOW_TAG_STICKY   (1ULL << 11)
-#define WINDOW_TAG_MODAL    (1ULL << 31)
+#define WINDOW_TAG_DOCUMENT      (1ULL << 0)
+#define WINDOW_TAG_FLOATING      (1ULL << 1)
+#define WINDOW_TAG_ATTACHED      (1ULL << 7)
+#define WINDOW_TAG_STICKY        (1ULL << 11)
+#define WINDOW_TAG_IGNORES_CYCLE (1ULL << 18)
+#define WINDOW_TAG_MODAL         (1ULL << 31)
 
 static inline bool window_suitable(CFTypeRef iterator) {
   uint64_t tags = SLSWindowIteratorGetTags(iterator);
@@ -16,6 +17,7 @@ static inline bool window_suitable(CFTypeRef iterator) {
   if ((parent_wid == 0)
        && ((attributes & 0x2) || (tags & 0x400000000000000))
        && !(tags & WINDOW_TAG_ATTACHED)
+       && !(tags & WINDOW_TAG_IGNORES_CYCLE)
        && ((tags & WINDOW_TAG_DOCUMENT) || ((tags & WINDOW_TAG_FLOATING)
                                             && (tags & WINDOW_TAG_MODAL)))) {
     return true;
